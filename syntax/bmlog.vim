@@ -6,7 +6,7 @@ if exists("b:current_syntax")
 endif
 
 " highlight ID's. Of cource it does not work if the name of ID
-" does not end with 'ID'. But still usefull.
+" does not end with 'ID'. But it is still usefull.
 syntax match bmlKeyWord /\w\+ID\>/
 
 let s:bmlm_time='\m^\[\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d '
