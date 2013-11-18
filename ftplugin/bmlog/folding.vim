@@ -30,11 +30,12 @@ function s:DoFold(selection_type, log_delta)
 		" TODO need to find out how to determine boundaries of selection
 		execute "`[v`]fold"
 	elseif a:selection_type ==# 'line'
-		let depth = bmlog_mv#GetCurDepth()
+		let reqID = bmlog_mv#GetCurReqID()
+		let depth = bmlog_mv#GetCurDepth(reqID)
 		if depth >= 0
 			let amended_depth = depth - a:log_delta
 			let amended_depth = amended_depth >= 0 ? amended_depth : 0
-			call <SID>FoldDepth(amended_depth)
+			call <SID>FoldDepth(amended_depth, reqID)
 			" echo ""
 		else
 			echo "nothing to fold: not inside a method"
@@ -43,11 +44,11 @@ function s:DoFold(selection_type, log_delta)
 endfunction
 
 
-function s:FoldDepth(depth)
+function s:FoldDepth(depth, reqID)
 	" fold log lines of a method of a specified depth (around cur position)
-	let startline = bmlog_mv#SearchMtdOfLevel(a:depth, 0, 1, 1)
+	let startline = bmlog_mv#SearchMtdOfLevel(a:reqID, a:depth, 0, 1, 1)
 	let startline = startline ? startline + 1 : 1
-	let endline = bmlog_mv#SearchMtdOfLevel(a:depth, 1, 0, 1)
+	let endline = bmlog_mv#SearchMtdOfLevel(a:reqID, a:depth, 1, 0, 1)
 	let endline = endline ? endline -1 : line('$')
 	while endline && <SID>LineIsResult(endline)
 		let endline -= 1
@@ -62,6 +63,6 @@ function s:LineIsResult(lineid)
 	" returns 1 if line is a 'result'. That is if line looks like
 	" [..usual stamp...] ==> ....
 	let l = getline(a:lineid)
-	let m = bmlog_mv#GetLogMask().' =\+>'
+	let m = bmlog_mv#GetHdrMask('').' \+=\+>'
 	return l =~# m
 endfunction

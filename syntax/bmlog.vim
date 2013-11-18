@@ -16,7 +16,7 @@ let s:bmlm_lvl='.\{3}\]'
 
 let s:bmlog_msk = s:bmlm_time.s:bmlm_obj.s:bmlm_req.s:bmlm_lvl
 
-let s:ret_msk = s:bmlog_msk.' =\+>'
+let s:ret_msk = s:bmlog_msk.' \+=\+>'
 
 execute 'syntax match bmlRetVal /'.s:ret_msk.'.*$/'
 

@@ -1,0 +1,95 @@
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF] Entering method BM::DoSomeWork(user = 1, transaction = 124, SID = 102, lang = en, HP)
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF] Loading readonly a row (UsersID=1) in table IntUsers
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Prepare [0x7f195c13f8f0]: SELECT "IU"."UsersID", "IU"."AccountID", "IU"."Login", "IU"."PasswordHash", "IU"."Status", "IU"."LoginAttempts", "IU"."PasswordChangedDate", "IU"."CreationDate", "IU"."UserArc", "IU"."DateArc" FROM "IntUsers" "IU"  WHERE "IU"."UsersID" = ?
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF] +++[0] ErrorMessage* BM::DoSomeWork(Int)(AccountID=1)
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]  +++[1] virtual Int bAccount::process(Int)(AccountID=5)
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=17)
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]  => 17
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=18)
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]  => 18
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=19)
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]  => 19
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=20)
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       RQ33457 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]  => 20
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF]  ---[1] virtual Int bAccount::process(Int)
+[13-11-01 00:00:34.645 generic_wor RQ33457 INF] ---[0] ErrorMessage* BM::DoSomeWork(Int)
+
+
+[13-11-01 00:00:34.645 generic_wor XX11111 INF] Entering method BM::DoSomeWork(user = 1, transaction = 124, SID = 102, lang = en, HP)
+[13-11-01 00:00:34.645 generic_wor XX11111 INF] Loading readonly a row (UsersID=1) in table IntUsers
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare [0x7f195c13f8f0]: SELECT "IU"."UsersID", "IU"."AccountID", "IU"."Login", "IU"."PasswordHash", "IU"."Status", "IU"."LoginAttempts", "IU"."PasswordChangedDate", "IU"."CreationDate", "IU"."UserArc", "IU"."DateArc" FROM "IntUsers" "IU"  WHERE "IU"."UsersID" = ?
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor XX11111 INF] +++[0] ErrorMessage* BM::DoSomeWork(Int)(AccountID=1)
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]  +++[1] virtual Int bAccount::process(Int)(AccountID=5)
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=17)
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]  => 17
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=18)
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]  => 18
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=19)
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]  => 19
+[13-11-01 00:00:34.645 generic_wor YY22222 INF] +++[0] ErrorMessage* BM::DoSomeWork(Int)(AccountID=1)
+[13-11-01 00:00:34.645 generic_wor YY22222 INF]  +++[1] virtual Int bAccount::process(Int)(AccountID=5)
+[13-11-01 00:00:34.645 generic_wor YY22222 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=17)
+[13-11-01 00:00:34.645 generic_wor YY22222 INF]  => 42
+[13-11-01 00:00:34.645 generic_wor YY22222 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor YY22222 INF]  ---[1] virtual Int bAccount::process(Int)
+[13-11-01 00:00:34.645 generic_wor YY22222 INF] ---[0] ErrorMessage* BM::DoSomeWork(Int)
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=20)
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]  => 20
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]  ---[1] virtual Int bAccount::process(Int)
+[13-11-01 00:00:34.645 generic_wor XX11111 INF] ---[0] ErrorMessage* BM::DoSomeWork(Int)
+
+[13-11-01 00:00:34.645 generic_wor YY22222 INF] +++[0] ErrorMessage* BM::DoSomeWork(Int)(AccountID=1)
+[13-11-01 00:00:34.645 generic_wor YY22222 INF]  +++[1] virtual Int bAccount::process(Int)(AccountID=5)
+[13-11-01 00:00:34.645 generic_wor YY22222 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=17)
+[13-11-01 00:00:34.645 generic_wor YY22222 INF]  => 42
+[13-11-01 00:00:34.645 generic_wor YY22222 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor YY22222 INF]  ---[1] virtual Int bAccount::process(Int)
+[13-11-01 00:00:34.645 generic_wor YY22222 INF] ---[0] ErrorMessage* BM::DoSomeWork(Int)
