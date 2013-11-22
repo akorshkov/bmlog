@@ -1,10 +1,10 @@
 
 
 " common masks
-let s:hdr_dt = '\m^\[\(\d\d-\d\d-\d\d\) \(\d\d:\d\d:\d\d.\d\d\d\) '
-let s:hdr_obj = '\(.\{11}\) '
-let s:hdr_req = '\(.\{7}\) '
-let s:hdr_lvl = '\(.\{3}\)]'
+let s:hdr_dt = '\m^\[\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d '
+let s:hdr_obj = '.\{11} '
+let s:hdr_req = '.\{7} '
+let s:hdr_lvl = '.\{3}]'
 
 let s:hdr_mask = s:hdr_dt.s:hdr_obj.s:hdr_req.s:hdr_lvl
 
@@ -36,9 +36,8 @@ function bmlog_mv#GetCurReqID(...)
 	let curLineId = a:0 ? a:1 : getpos('.')[1]
 	while curLineId
 		let l = getline(curLineId)
-		let md = matchlist(l, s:hdr_mask) " [str, date, time, objid, reqid, lvl]
-		if len(md)
-			let reqid = md[4]
+		if l =~ s:hdr_mask
+			let reqid = l[35:41]
 			echom reqid
 			return reqid
 		endif
@@ -56,6 +55,10 @@ function bmlog_mv#GetCurDepth(reqID)
 	if ifStart && curLine != lineid
 		let depth -= 1
 	endif
+	if depth >= 0
+		return depth
+	endif
+	" let's try to find out
 	return depth >= 0 ? depth : -1
 endfunction
 
