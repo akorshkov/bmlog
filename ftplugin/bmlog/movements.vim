@@ -13,4 +13,5 @@ nnoremap <buffer> <leader>N :call bmlog_movements#MoveNextMethod()<cr>
 nnoremap <buffer> <leader>S :call bmlog_movements#MoveNextMethod()<cr>
 nnoremap <buffer> <leader>F :call bmlog_movements#MoveNextMethod()<cr>
 
-nnoremap <buffer> zx :call bmlog_mv#GetCurReqID()<cr>
+nnoremap <buffer> zX :echo bmlog_lib#GetCurReqID()<cr>
+nnoremap <buffer> zx :echo bmlog_lib#GetCurDepth( bmlog_lib#GetCurReqID() )<cr>

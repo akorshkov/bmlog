@@ -58,13 +58,19 @@ c: mixed transactions
 [13-11-01 00:00:34.645 RDBMS       XX11111 INF] Execute
 [13-11-01 00:00:34.645 RDBMS       XX11111 INF] Fetch
 [13-11-01 00:00:34.645 generic_wor XX11111 INF]  => 17
-[13-11-01 00:00:34.645 generic_wor XX11111 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]   ...[2] virtual Int bARDoc::process(Int)
 [13-11-01 00:00:34.645 generic_wor XX11111 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=18)
 [13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare some db
 [13-11-01 00:00:34.645 RDBMS       XX11111 INF] Execute
 [13-11-01 00:00:34.645 RDBMS       XX11111 INF] Fetch
 [13-11-01 00:00:34.645 generic_wor XX11111 INF]  => 18
 [13-11-01 00:00:34.645 generic_wor XX11111 INF]   ---[2] virtual Int bARDoc::process(Int)
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=18)
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare some db
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Execute
+[13-11-01 00:00:34.645 RDBMS       XX11111 INF] Fetch
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]  => 18.5
+[13-11-01 00:00:34.645 generic_wor XX11111 INF]   ___[2] virtual Int bARDoc::process(Int)
 [13-11-01 00:00:34.645 generic_wor XX11111 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=19)
 [13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare some db
 [13-11-01 00:00:34.645 RDBMS       XX11111 INF] Execute
@@ -77,6 +83,7 @@ c: mixed transactions
 [13-11-01 00:00:34.645 generic_wor YY22222 INF]   ---[2] virtual Int bARDoc::process(Int)
 [13-11-01 00:00:34.645 generic_wor YY22222 INF]  ---[1] virtual Int bAccount::process(Int)
 [13-11-01 00:00:34.645 generic_wor YY22222 INF] ---[0] ErrorMessage* BM::DoSomeWork(Int)
+[13-11-01 00:00:34.645 generic_wor YY22222 INF] some comment
 [13-11-01 00:00:34.645 generic_wor XX11111 INF]   ---[2] virtual Int bARDoc::process(Int)
 [13-11-01 00:00:34.645 generic_wor XX11111 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=20)
 [13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare some db
@@ -125,6 +132,7 @@ c: othe container call in the same transaction
 [13-11-01 00:00:34.645 generic_wor XX11111 INF]   ---[2] ::::::: virtual Int bARDoc::process(Int)
 [13-11-01 00:00:34.645 generic_wor XX11111 INF]  ---[1] ::::::: virtual Int bAccount::process(Int)
 [13-11-01 00:00:34.645 generic_wor XX11111 INF] ---[0] ::::::: ErrorMessage* BM::DoSomeWork(Int)
+[13-11-01 00:00:34.645 generic_wor XX11111 INF] some comment
 [13-11-01 00:00:34.645 generic_wor XX11111 INF]   ---[2] virtual Int bARDoc::process(Int)
 [13-11-01 00:00:34.645 generic_wor XX11111 INF]   +++[2] virtual Int bARDoc::process(Int)(DocID=20)
 [13-11-01 00:00:34.645 RDBMS       XX11111 INF] Prepare some db
