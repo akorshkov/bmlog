@@ -2,13 +2,13 @@
 " ==========================================
 " top-level functions to be used in mappings
 
-function bmlog_folding#FoldInnermost(selection_type)
+function! bmlog_folding#FoldInnermost(selection_type)
 	" fold innermost level of log (around cur position)
 	call <SID>DoFold(a:selection_type, 0)
 endfunction
 
 
-function bmlog_folding#Fold1(selection_type)
+function! bmlog_folding#Fold1(selection_type)
 	" fold second innermost level of log (around cur position)
 	call <SID>DoFold(a:selection_type, 1)
 endfunction
@@ -17,7 +17,7 @@ endfunction
 " ==========================================
 " local helpers
 
-function s:DoFold(selection_type, log_delta)
+function! s:DoFold(selection_type, log_delta)
 	" fold innermost level of log (around cur position)
 	if a:selection_type ==# 'V'
 		" TODO need to find out how to determine boundaries of selection
@@ -37,7 +37,7 @@ function s:DoFold(selection_type, log_delta)
 endfunction
 
 
-function s:FoldDepth(depth, reqID)
+function! s:FoldDepth(depth, reqID)
 	" fold log lines of a method of a specified depth (around cur position)
 	let startline = bmlog_lib#SearchMatchingMtdLine(a:reqID, a:depth, 0)
 	let startline = startline ? startline + 1 : 1
@@ -52,7 +52,7 @@ function s:FoldDepth(depth, reqID)
 endfunction
 
 
-function s:LineIsResult(lineid)
+function! s:LineIsResult(lineid)
 	" returns 1 if line is a 'result'. That is if line looks like
 	" [..usual stamp...] ==> ....
 	let l = getline(a:lineid)

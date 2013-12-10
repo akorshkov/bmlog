@@ -15,7 +15,7 @@ let s:f_starts_ends = { 1: '+++', 0: '\%(---\|\.\.\.\)', -1: '\%(+++\|---\|\.\.\
 " ====================================
 " Helper methods for moving around bmlog files
 
-function bmlog_lib#GetHdrMask(reqID)
+function! bmlog_lib#GetHdrMask(reqID)
 	" returns mask for the header of the bmlog line.
 	" (Header looks like '[date time object request loglevel]')
 	"
@@ -24,7 +24,7 @@ function bmlog_lib#GetHdrMask(reqID)
 endfunction
 
 
-function bmlog_lib#GetMtdMask(reqID, depth, ifStart)
+function! bmlog_lib#GetMtdMask(reqID, depth, ifStart)
 	" returns mask for log line with method boundary
 	" Arguments:
 	"   - reqID : request id (or empty string to match any request)
@@ -39,7 +39,7 @@ function bmlog_lib#GetMtdMask(reqID, depth, ifStart)
 endfunction
 
 
-function bmlog_lib#GetCurReqID(...)
+function! bmlog_lib#GetCurReqID(...)
 	" returns the request id corresponding to the specified (or current)
 	" line of log
 	let curLineId = a:0 ? a:1 : getpos('.')[1]
@@ -56,34 +56,64 @@ function bmlog_lib#GetCurReqID(...)
 endfunction
 
 
-function bmlog_lib#GetCurDepth(reqID)
+function! bmlog_lib#GetCurDepth(reqID)
 	" returns depth of the current log line
 	" (-1 if current line is outside of a method of depth 0)
-	let curLine = getpos('.')[1]
-	" we will try to find out current depth first searching backward,
-	" and after that looking forward
-	let [depth, ifStart, lineid] = <SID>SearchNextMtd(a:reqID, 0)
-	if depth > 0
-		return depth
-	endif
-	if depth == 0 && (ifStart || lineid == curLine)
-		return depth
-	endif
-	" special case here: We found end of zero-depth method.
-	" Either we are outside method log, or there is a nested
-	" call of another container in same request.
-	let [depth, ifStart, lineid] = <SID>SearchNextMtd(a:reqID, 1)
-	if ifStart && curLine != lineid
-		let depth -= 1
-	endif
-	if depth >= 0
-		return depth
-	endif
-	return depth >= 0 ? depth : -1
+	return bmlog_lib#GetCurDepthAndPos(a:reqID)[0]
 endfunction
 
 
-function bmlog_lib#SearchMtdOfLevel(reqID, depth, ifFwd, ifStart, acceptCurPos)
+function! bmlog_lib#GetCurDepthAndPos(reqID)
+	" returns:
+	"   - depth of the current log line
+	"   - curLineId
+	"   - posType of the current line:
+	"      's' - curline is the start line of the method
+	"      'b' - curline is in the body of the method
+	"      'e' - curline is the last line of the method
+	" If current line is outside of zero-level function
+	" returns [-1, curLineId, 'o']
+
+	let curLineId = getpos('.')[1]
+	" usually it's enough just to look backward:
+	let [depth, ifStart, lineId] = <SID>SearchNextMtd(a:reqID, 0)
+	if lineId
+		if ifStart
+			let posType = lineId == curLineId ? 's' : 'b'
+			return [depth, curLineId, posType]
+		elseif lineId == curLineId
+			return [depth, curLineId, 'e']
+		elseif depth > 0
+			return [depth - 1, curLineId, 'b']
+		endif
+	else
+		return [-1, curLineId, 'o']
+	endif
+	" The only case not processed yet is: looking backwards we
+	" found closing of method of depth 0.
+	" This either means that we are outside of 0-depth method,
+	" or that there was a nested call to other container.
+	" Need to look forward to find out what happened.
+	let [depth, ifStart, lineid] = <SID>SearchNextMtd(a:reqID, 1)
+	if lineid
+		if ifStart
+			if depth > 0
+				return [depth -1, curLineId, 'b']
+			else
+				" somehow we are between closing and opening of depth 0
+				" strange, but possible
+				return [-1, curLineId, 'o']
+			endif
+		else
+			return [depth, curLineId, 'b']
+		endif
+	endif
+
+	return [-1, curLineId, 'o']
+endfunction
+
+
+function! bmlog_lib#SearchMtdOfLevel(reqID, depth, ifFwd, ifStart, acceptCurPos)
 	" search forward/backward a start/end of the method of a level depth
 	" returns lineid of a found line or 0
 	let savec = getpos('.')
@@ -103,8 +133,17 @@ function bmlog_lib#SearchMtdOfLevel(reqID, depth, ifFwd, ifStart, acceptCurPos)
 endfunction
 
 
-function bmlog_lib#SearchMatchingMtdLine(reqID, depth, ifFwd)
-	" Search for matching opening/closing method line.
+function! bmlog_lib#SearchMatchingMtdLine(reqID, depth, ifFwd)
+	" Returns lineid of matching opening/closing method line.
+	" If searching forward looks for closing line,
+	" otherwise looks for opening line
+	let ifStart = !a:ifFwd
+	return bmlog_lib#SearchPairMtdLine(a:reqID, a:depth, a:ifFwd, ifStart ,0)
+endfunction
+
+
+function! bmlog_lib#SearchPairMtdLine(reqID, depth, ifFwd, ifStart, ifSkipCurPos)
+	" Returns lineid of matching opening/closing method line.
 	" (f.e. closing line for method depth [n] even if
 	" there are several opening/closing lines for the method
 	" of the same depth on the way)
@@ -117,13 +156,22 @@ function bmlog_lib#SearchMatchingMtdLine(reqID, depth, ifFwd)
 
 	let start_m = bmlog_lib#GetMtdMask(a:reqID, a:depth, 1)
 	let end_m = bmlog_lib#GetMtdMask(a:reqID, a:depth, 0)
-	let m_m = a:ifFwd ? end_m : start_m
 
 	let lineid = 0
-	if getline(curLineId) =~ m_m
-		let lineid = curLineId
-	else
+	let linefound = 0
+	if !a:ifSkipCurPos
+		let m_m = a:ifStart ? start_m : end_m
+		if getline(curLineId) =~ m_m
+			let lineid = curLineId
+			let linefound = 1
+		endif
+	endif
+	if !linefound
+		if a:ifFwd + a:ifStart != 1
+			let [start_m, end_m] = [end_m, start_m]
+		endif
 		let searchflags = a:ifFwd ? 'nW' : 'nbW'
+		" depending on direction returns either position of start_m or end_m:
 		let lineid = searchpair(start_m, '', end_m, searchflags)
 	endif
 	let lineid = lineid == -1 ? 0 : lineid
@@ -135,7 +183,7 @@ endfunction
 " ====================================
 " Internal auxiliary methods
 
-function s:SearchNextMtd(reqID, ifFwd)
+function! s:SearchNextMtd(reqID, ifFwd)
 	" searches for method start/end
 	" returns:
 	"   method depth
@@ -147,7 +195,7 @@ function s:SearchNextMtd(reqID, ifFwd)
 endfunction
 
 
-function s:SearchMtd(reqID, ifFwd, ifStart)
+function! s:SearchMtd(reqID, ifFwd, ifStart)
 	" search log line for start/end of pba method
 	" Arguments:
 	"   reqID : request id (or empty string)
@@ -171,35 +219,41 @@ function s:SearchMtd(reqID, ifFwd, ifStart)
 	if search(m, flags)
 		let foundpos = getpos('.') " [buf, line, col, offset]
 		let lineid = foundpos[1]
-		let l = getline(lineid)
-		let tst_msk = s:hdr_mask . ' \+\(+++\|---\|\.\.\.\)\[\(\d\+\)\]'
-		let md = matchlist(l, tst_msk)
-		let ifFoundStart = md[1] == '+++'
-		let depth = md[2] + 0  " convert to number
+		let [depth, ifFoundStart] = bmlog_lib#GetLineProps(lineid)
 	endif
 	call setpos('.', savec)
 	return [lineid, depth, ifFoundStart]
 endfunction
 
 
+function! bmlog_lib#GetLineProps(lineid)
+	let l = getline(a:lineid)
+	let tst_msk = s:hdr_mask . ' \+\(+++\|---\|\.\.\.\)\[\(\d\+\)\]'
+	let md = matchlist(l, tst_msk)
+	let ifFoundStart = md[1] == '+++'
+	let depth = md[2] + 0  " convert to number
+	return [depth, ifFoundStart]
+endfunction
+
+
 " ====================================
 " Very auxiliary methods
 
-function bmlog_lib#GetMinLine(line1, line2)
+function! bmlog_lib#GetMinLine(line1, line2)
 	" return min of 2 lines
 	" The trick is that linex == 0 means 'undefined'
 	return <SID>GetCmpLine(a:line1, a:line2, 1)
 endfunction
 
 
-function bmlog_lib#GetMaxLine(line1, line2)
+function! bmlog_lib#GetMaxLine(line1, line2)
 	" return min of 2 lines
 	" The trick is that linex == 0 means 'undefined'
 	return <SID>GetCmpLine(a:line1, a:line2, 0)
 endfunction
 
 
-function s:GetCmpLine(line1, line2, ifMin)
+function! s:GetCmpLine(line1, line2, ifMin)
 	if !a:line1
 		return a:line2
 	elseif !a:line2
