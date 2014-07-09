@@ -33,8 +33,24 @@ function! bmlog_movements#MovePrev()
 	else
 		echo "bmlog_movements internal error"
 	endif
+endfunction
 
 
+function! bmlog_movements#MoveStep()
+	let ifFwd = 1
+	let reqID = bmlog_lib#GetCurReqID()
+	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
+	call <SID>MoveToFirstFoundLine(ifFwd, reqID,
+		\ [[depth + 1, 1], [depth, 1], [depth, 0], [depth-1, 0]])
+endfunction
+
+
+function! bmlog_movements#MovePrevStep()
+	let ifFwd = 0
+	let reqID = bmlog_lib#GetCurReqID()
+	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
+	call <SID>MoveToFirstFoundLine(ifFwd, reqID,
+		\ [[depth + 1, 0], [depth, 0], [depth, 1], [depth-1, 1]])
 endfunction
 
 

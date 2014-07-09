@@ -4,9 +4,10 @@
 let s:hdr_dt = '\m^\[\d\d-\d\d-\d\d \d\d:\d\d:\d\d\.\d\d\d '
 let s:hdr_obj = '.\{11} '
 let s:hdr_req = '.\{7} '
+let s:hdr_th = '.\{7} '
 let s:hdr_lvl = '.\{3}]'
 
-let s:hdr_mask = s:hdr_dt.s:hdr_obj.s:hdr_req.s:hdr_lvl
+let s:hdr_mask = s:hdr_dt.s:hdr_obj.s:hdr_req.s:hdr_th.s:hdr_lvl
 
 " \%(+++\|---\) - either '+++' or '---' and it is not
 " a subexpression! (note '%'):
@@ -20,7 +21,7 @@ function! bmlog_lib#GetHdrMask(reqID)
 	" (Header looks like '[date time object request loglevel]')
 	"
 	" if reqID is empty, returns mask to match header with any reqID
-	return len(a:reqID) ? s:hdr_dt.s:hdr_obj.a:reqID.' \+'.s:hdr_lvl : s:hdr_mask
+	return len(a:reqID) ? s:hdr_dt.s:hdr_obj.a:reqID.' \+'.s:hdr_th.s:hdr_lvl : s:hdr_mask
 endfunction
 
 

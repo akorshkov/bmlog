@@ -4,6 +4,7 @@ autocmd BufNewFile,BufRead *.log call Detect_bmlog_filetype()
 let s:bmlog_msk = '\m^\[\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d '
 let s:bmlog_msk.= '.\{11} '
 let s:bmlog_msk.= '.\{7} '
+let s:bmlog_msk.= '.\{7} '
 let s:bmlog_msk.= '.\{3}\]'
 
 function! Detect_bmlog_filetype()
