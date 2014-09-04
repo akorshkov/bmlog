@@ -6,8 +6,8 @@ CONTENTS                                             *bmlog*  *bmlog-contents*
     1. Intro                                 |bmlog-intro|
     2. Usage                                 |bmlog-usage|
         2.1. Highliting                      |bmlog-highlighting|
-	2.2. Navigation Commands             |bmlog-navigation|
-	2.3. Folding                         |bmlog-folding|
+        2.2. Navigation Commands             |bmlog-navigation|
+        2.3. Folding Commands                |bmlog-folding|
     3. Troubleshooting                       |bmlog-troubleshooting|
     4. Bugs, bugreports                      |bmlog-bugs|
 
@@ -17,7 +17,7 @@ CONTENTS                                             *bmlog*  *bmlog-contents*
 
     This plugin helps to read logs of Parallels Business Automation vv 5.x
 and 6.x. It provides syntax highlighting, and implements several commands for
-navigation and folding of PBA log files.
+navigation and folding.
 
 
 ==============================================================================
@@ -32,7 +32,13 @@ mappings, etc. Just use them if you like.
 ------------------------------------------------------------------------------
 2.1. Syntax Highliting                                    *bmlog-highlighting*
 
+    Highlited items are:
+    - Errors
+    - RDBMS log messages
+    - entityID's
+    etc.
 
+    No configuration options or commands - it just works as is.
 
 ------------------------------------------------------------------------------
 2.2. Navigation Commands                                    *bmlog-navigation*
@@ -44,11 +50,44 @@ mappings, etc. Just use them if you like.
 
     <leader>n    - move to next method (like 'next' in debugger) 
     <leader>s    - move to next method (like 'step' in debugger) 
-    ]]           - same as <Leader>s
+    ]]           - same as <leader>s
     <leader>f    - go to the end of current method
 
     <leader>N    - similar to <leader>n, but move backwards
     <leader>S    - similar to <leader>s, but move backwards
-    [[           - same as <Leader>S
+    [[           - same as <leader>S
     <leader>F    - go to the start of current method
 
+------------------------------------------------------------------------------
+2.3. Folding Commands                                          *bmlog-folding*
+
+    zl           - fold away current method
+    zL           - fold away more: if coursor is inside method of level N, the
+                   contents of current method of level N-1 will be
+		   folded away.
+
+    (To get back folded lines move cursor to folded lines and push 'l')
+
+
+==============================================================================
+3. Troubleshooting                                     *bmlog-troubleshooting*
+
+    - Nothing works: there is no even syntax highliting!
+
+    Probably plugin failed to recognize pba log structure in your file.
+Use the following command to find out what vim thinks about the type of your
+file:
+
+:set filytype?
+
+    The filetype should be 'bmlog'. If it is not try to set filetype manually:
+
+:set filetype=bmlog
+
+    In any case report the problem: |bmlog-bugs|
+
+
+==============================================================================
+4. Bugs, bugreports                                               *bmlog-bugs*
+
+    Report bugs/suggestions to akorshkov@parallels.com.

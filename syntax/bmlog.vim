@@ -9,16 +9,8 @@ endif
 " does not end with 'ID'. But it is still usefull.
 syntax match bmlKeyWord /\w\+ID\>/
 
-let s:bmlm_time='\m^\[\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d '
-let s:bmlm_obj='.\{11} '
-let s:bmlm_req='.\{7} '
-let s:bmlm_lvl='.\{3}\]'
-
-let s:bmlog_msk = s:bmlm_time.s:bmlm_obj.s:bmlm_req.s:bmlm_lvl
-
-let s:ret_msk = s:bmlog_msk.' \+=\+>'
-
-execute 'syntax match bmlRetVal /'.s:ret_msk.'.*$/'
+" ====> lines:
+execute 'syntax match bmlRetVal /'.bmlog_lib#GetHdrMask("", "").' \+=\+>.*$/'
 
 syntax match bmlDbTransact /^.* application transaction =.*$/
 syntax match bmlDbTransact /^.* ROLLBACK of transaction =.*$/
