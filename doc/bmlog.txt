@@ -1,0 +1,54 @@
+bmlog.txt  Highliting and navigating PBA log files.
+
+==============================================================================
+CONTENTS                                             *bmlog*  *bmlog-contents*
+
+    1. Intro                                 |bmlog-intro|
+    2. Usage                                 |bmlog-usage|
+        2.1. Highliting                      |bmlog-highlighting|
+	2.2. Navigation Commands             |bmlog-navigation|
+	2.3. Folding                         |bmlog-folding|
+    3. Troubleshooting                       |bmlog-troubleshooting|
+    4. Bugs, bugreports                      |bmlog-bugs|
+
+
+==============================================================================
+1. Intro                                                         *bmlog-intro*
+
+    This plugin helps to read logs of Parallels Business Automation vv 5.x
+and 6.x. It provides syntax highlighting, and implements several commands for
+navigation and folding of PBA log files.
+
+
+==============================================================================
+2. Usage                                                         *bmlog-usage*
+
+    Usage is pretty simple: after bmlog plugin is installed, every time you
+open a *.log file the plugin will analise it's contents and if the file looks
+like a log of PBA, plugin will add syntax highlighting, keyboard
+mappings, etc. Just use them if you like.
+
+
+------------------------------------------------------------------------------
+2.1. Syntax Highliting                                    *bmlog-highlighting*
+
+
+
+------------------------------------------------------------------------------
+2.2. Navigation Commands                                    *bmlog-navigation*
+
+    List of navigation commands (<leader> is '\' button by default. Check out
+|mapleader| help topic for more details):
+
+    []           - jump between start and end of method
+
+    <leader>n    - move to next method (like 'next' in debugger) 
+    <leader>s    - move to next method (like 'step' in debugger) 
+    ]]           - same as <Leader>s
+    <leader>f    - go to the end of current method
+
+    <leader>N    - similar to <leader>n, but move backwards
+    <leader>S    - similar to <leader>s, but move backwards
+    [[           - same as <Leader>S
+    <leader>F    - go to the start of current method
+

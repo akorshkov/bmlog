@@ -7,7 +7,8 @@ let s:hdr_req = '.\{7} '
 let s:hdr_th = '.\{7} '
 let s:hdr_lvl = '.\{3}]'
 
-let s:hdr_mask = s:hdr_dt.s:hdr_obj.s:hdr_req.s:hdr_th.s:hdr_lvl
+let s:hdr_mask_5 = s:hdr_dt.s:hdr_obj.s:hdr_req.s:hdr_lvl
+let s:hdr_mask_6 = s:hdr_dt.s:hdr_obj.s:hdr_req.s:hdr_th.s:hdr_lvl
 
 " \%(+++\|---\) - either '+++' or '---' and it is not
 " a subexpression! (note '%'):
@@ -16,12 +17,21 @@ let s:f_starts_ends = { 1: '+++', 0: '\%(---\|\.\.\.\)', -1: '\%(+++\|---\|\.\.\
 " ====================================
 " Helper methods for moving around bmlog files
 
-function! bmlog_lib#GetHdrMask(reqID)
+function! bmlog_lib#GetHdrMask(reqID, bm_ver)
 	" returns mask for the header of the bmlog line.
 	" (Header looks like '[date time object request loglevel]')
 	"
-	" if reqID is empty, returns mask to match header with any reqID
-	return len(a:reqID) ? s:hdr_dt.s:hdr_obj.a:reqID.' \+'.s:hdr_th.s:hdr_lvl : s:hdr_mask
+	" Arguments:
+	"   - reqID - if empty, returns mask to match header with any reqID
+	"   - bm_ver - version of pba. '5' or '6'.
+	"              If empty - take previously detected values saved in buffer
+	"              variable
+	let bm_ver = len(a:bm_ver) ? a:bm_ver : (exists('b:bm_ver') ? b:bm_ver : "6")
+	if bm_ver == "6"
+		return len(a:reqID) ? s:hdr_dt.s:hdr_obj.a:reqID.' \+'.s:hdr_th.s:hdr_lvl : s:hdr_mask_6
+	else
+		return len(a:reqID) ? s:hdr_dt.s:hdr_obj.a:reqID.' \+'.s:hdr_lvl : s:hdr_mask_5
+	endif
 endfunction
 
 
@@ -33,7 +43,7 @@ function! bmlog_lib#GetMtdMask(reqID, depth, ifStart)
 	"   - ifStart : 1 - match method start
 	"               0 - match method end
 	"               -1 - match either
-	let hdr_m = bmlog_lib#GetHdrMask(a:reqID)
+	let hdr_m = bmlog_lib#GetHdrMask(a:reqID, "")
 	let plus_minus = s:f_starts_ends[a:ifStart] " '+++' or '---' or '+++\|---' (or even '...')
 	let dpth_m = a:depth == -1 ? '\[\d\+\]' : '\['.a:depth.'\]'
 	return hdr_m .' \+' . plus_minus . dpth_m
@@ -46,7 +56,7 @@ function! bmlog_lib#GetCurReqID(...)
 	let curLineId = a:0 ? a:1 : getpos('.')[1]
 	while curLineId
 		let l = getline(curLineId)
-		if l =~ s:hdr_mask
+		if l =~ bmlog_lib#GetHdrMask("", "")
 			let reqid = l[35:41]
 			" echom reqid
 			return reqid
@@ -229,7 +239,7 @@ endfunction
 
 function! bmlog_lib#GetLineProps(lineid)
 	let l = getline(a:lineid)
-	let tst_msk = s:hdr_mask . ' \+\(+++\|---\|\.\.\.\)\[\(\d\+\)\]'
+	let tst_msk = bmlog_lib#GetHdrMask("", "") . ' \+\(+++\|---\|\.\.\.\)\[\(\d\+\)\]'
 	let md = matchlist(l, tst_msk)
 	let ifFoundStart = md[1] == '+++'
 	let depth = md[2] + 0  " convert to number

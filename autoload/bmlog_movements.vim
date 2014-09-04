@@ -1,18 +1,44 @@
 
+
+" ==========================================
+" global constants
+
+let s:F_START = 1
+let s:F_END = 0
+
+let s:MV_FWD = 1
+let s:MV_BKWD = 0
+
 " ==========================================
 " top-level functions to be used in mappings
 
+
+function! bmlog_movements#StartEnd()
+	" jump between start and end of method
+	let reqID = bmlog_lib#GetCurReqID()
+	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
+	if posType == 'b' || posType == 's'
+		:norm m'
+		call <SID>MoveToFirstFoundLine(s:MV_FWD, reqID, [[depth, s:F_END], ])
+	elseif posType == 'e'
+		:norm m'
+		call <SID>MoveToFirstFoundLine(s:MV_BKWD, reqID, [[depth, s:F_START], ])
+	endif
+endfunction
+
+
 function! bmlog_movements#MoveNext()
 	" move forward to as if using 'next' debugger command
-	let ifFwd = 1
+	:norm m'
+	let ifFwd = s:MV_FWD
 	let reqID = bmlog_lib#GetCurReqID()
 	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
 	if posType == 'b' || posType == 'o'
 		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
-			\ [[depth + 1, 1], [depth, 0]])
+			\ [[depth + 1, s:F_START], [depth, s:F_END]])
 	elseif posType == 's' || posType == 'e'
 		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
-			\ [[depth, 1], [depth-1, 0]])
+			\ [[depth, s:F_START], [depth-1, s:F_END]])
 	else
 		echo "bmlog_movements internal error"
 	endif
@@ -21,15 +47,16 @@ endfunction
 
 function! bmlog_movements#MovePrev()
 	" opposite to MoveNext
+	:norm m'
 	let ifFwd = 0
 	let reqID = bmlog_lib#GetCurReqID()
 	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
 	if posType == 'b' || posType == 'o'
 		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
-			\ [[depth + 1, 1], [depth, 1]])
+			\ [[depth + 1, s:F_START], [depth, s:F_START]])
 	elseif posType == 's' || posType == 'e'
 		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
-			\ [[depth, 1], [depth-1, 1]])
+			\ [[depth, s:F_START], [depth-1, s:F_START]])
 	else
 		echo "bmlog_movements internal error"
 	endif
@@ -37,29 +64,35 @@ endfunction
 
 
 function! bmlog_movements#MoveStep()
+	:norm m'
 	let ifFwd = 1
 	let reqID = bmlog_lib#GetCurReqID()
 	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
 	call <SID>MoveToFirstFoundLine(ifFwd, reqID,
-		\ [[depth + 1, 1], [depth, 1], [depth, 0], [depth-1, 0]])
+		\ [[depth + 1, s:F_START], [depth, s:F_START],
+		\ [depth, 0], [depth-1, 0]])
 endfunction
 
 
 function! bmlog_movements#MovePrevStep()
+	:norm m'
 	let ifFwd = 0
 	let reqID = bmlog_lib#GetCurReqID()
 	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
 	call <SID>MoveToFirstFoundLine(ifFwd, reqID,
-		\ [[depth + 1, 0], [depth, 0], [depth, 1], [depth-1, 1]])
+		\ [[depth + 1, 0], [depth, 0],
+		\ [depth, s:F_START], [depth-1, s:F_START]])
 endfunction
 
 
 function! bmlog_movements#MoveFinish()
+	:norm m'
 	call <SID>MoveCurMethodBoundary(1)
 endfunction
 
 
 function! bmlog_movements#MoveStart()
+	:norm m'
 	call <SID>MoveCurMethodBoundary(0)
 endfunction
 

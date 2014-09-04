@@ -56,6 +56,6 @@ function! s:LineIsResult(lineid)
 	" returns 1 if line is a 'result'. That is if line looks like
 	" [..usual stamp...] ==> ....
 	let l = getline(a:lineid)
-	let m = bmlog_lib#GetHdrMask('').' \+=\+>'
+	let m = bmlog_lib#GetHdrMask('', '').' \+=\+>'
 	return l =~# m
 endfunction
