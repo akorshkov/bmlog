@@ -40,23 +40,19 @@ mappings, etc. Just use them if you like.
 
     No configuration options or commands - it just works as is.
 
+
 ------------------------------------------------------------------------------
 2.2. Navigation Commands                                    *bmlog-navigation*
 
-    List of navigation commands (<leader> is '\' button by default. Check out
-|mapleader| help topic for more details):
-
     []           - jump between start and end of method
 
-    <leader>n    - move to next method (like 'next' in debugger) 
-    <leader>s    - move to next method (like 'step' in debugger) 
-    ]]           - same as <leader>s
-    <leader>f    - go to the end of current method
+    ]]           - move forward to the start of the next method of the same depth
+    [[           - move backwards to the start of the previous method of the
+                   same depth
 
-    <leader>N    - similar to <leader>n, but move backwards
-    <leader>S    - similar to <leader>s, but move backwards
-    [[           - same as <leader>S
-    <leader>F    - go to the start of current method
+    {{           - move backwards to the start of the current method
+    }}           - move forward to the end of the current method
+
 
 ------------------------------------------------------------------------------
 2.3. Folding Commands                                          *bmlog-folding*
@@ -90,4 +86,4 @@ file:
 ==============================================================================
 4. Bugs, bugreports                                               *bmlog-bugs*
 
-    Report bugs/suggestions to akorshkov@parallels.com.
+    Report bugs/suggestions to akorshkov@odin.com.

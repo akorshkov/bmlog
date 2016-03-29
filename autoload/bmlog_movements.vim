@@ -28,17 +28,20 @@ endfunction
 
 
 function! bmlog_movements#MoveNext()
-	" move forward to as if using 'next' debugger command
+	" move forward to the start of the next method of the same depth
 	:norm m'
 	let ifFwd = s:MV_FWD
 	let reqID = bmlog_lib#GetCurReqID()
 	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
-	if posType == 'b' || posType == 'o'
+	if posType == 's' || posType == 'e'
+		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
+			\ [[depth, s:F_START], [depth - 1, s:F_END]])
+	elseif posType == 'b'
 		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
 			\ [[depth + 1, s:F_START], [depth, s:F_END]])
-	elseif posType == 's' || posType == 'e'
+	elseif posType == 'o'
 		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
-			\ [[depth, s:F_START], [depth-1, s:F_END]])
+			\ [[0, s:F_START]])
 	else
 		echo "bmlog_movements internal error"
 	endif
@@ -46,54 +49,63 @@ endfunction
 
 
 function! bmlog_movements#MovePrev()
-	" opposite to MoveNext
+	" move backwards to the start of the previous method of the same depth
+	" usually opposite to MoveNext
 	:norm m'
 	let ifFwd = 0
 	let reqID = bmlog_lib#GetCurReqID()
 	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
-	if posType == 'b' || posType == 'o'
+	if posType == 's' || posType == 'e'
+		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
+			\ [[depth, s:F_START], [depth - 1, s:F_START]])
+	elseif posType == 'b'
 		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
 			\ [[depth + 1, s:F_START], [depth, s:F_START]])
-	elseif posType == 's' || posType == 'e'
-		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
-			\ [[depth, s:F_START], [depth-1, s:F_START]])
+	elseif posType == 'o'
+		echo "outside method"
 	else
 		echo "bmlog_movements internal error"
 	endif
 endfunction
 
 
-function! bmlog_movements#MoveStep()
-	:norm m'
-	let ifFwd = 1
-	let reqID = bmlog_lib#GetCurReqID()
-	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
-	call <SID>MoveToFirstFoundLine(ifFwd, reqID,
-		\ [[depth + 1, s:F_START], [depth, s:F_START],
-		\ [depth, 0], [depth-1, 0]])
-endfunction
-
-
-function! bmlog_movements#MovePrevStep()
+function! bmlog_movements#MoveStart()
+	" move backwards to the start of the current method
 	:norm m'
 	let ifFwd = 0
 	let reqID = bmlog_lib#GetCurReqID()
 	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
-	call <SID>MoveToFirstFoundLine(ifFwd, reqID,
-		\ [[depth + 1, 0], [depth, 0],
-		\ [depth, s:F_START], [depth-1, s:F_START]])
+	if posType == 's'
+		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
+			\ [[depth - 1, s:F_START]])
+	elseif posType == 'b' || posType == 'e'
+		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
+			\ [[depth, s:F_START]])
+	elseif posType == 'o'
+		echo "outside method"
+	else
+		echo "bmlog_movements internal error"
+	endif
 endfunction
 
 
-function! bmlog_movements#MoveFinish()
+function! bmlog_movements#MoveEnd()
+	" move forward to the end of the current method
 	:norm m'
-	call <SID>MoveCurMethodBoundary(1)
-endfunction
-
-
-function! bmlog_movements#MoveStart()
-	:norm m'
-	call <SID>MoveCurMethodBoundary(0)
+	let ifFwd = 1
+	let reqID = bmlog_lib#GetCurReqID()
+	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
+	if posType == 's' || posType == 'e'
+		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
+			\ [[depth - 1, s:F_END]])
+	elseif posType == 'b'
+		call <SID>MoveToFirstFoundLine(ifFwd, reqID,
+			\ [[depth, s:F_END]])
+	elseif posType == 'o'
+		echo "outside method"
+	else
+		echo "bmlog_movements internal error"
+	endif
 endfunction
 
 
@@ -110,13 +122,6 @@ function! s:MoveToClosingCurMethod(reqID, depth, ifFwd)
 endfunction
 
 
-function! s:MoveCurMethodBoundary(ifFwd)
-	let reqID = bmlog_lib#GetCurReqID()
-	let [depth, curLineId, posType] = bmlog_lib#GetCurDepthAndPos(reqID)
-	call <SID>MoveToClosingCurMethod(reqID, depth, a:ifFwd)
-endfunction
-
-
 function! s:MoveToFirstFoundLine(ifFwd, reqID, searchList)
 	let tgtLineId = <SID>FindFirstSkipNested(a:ifFwd, a:reqID, a:searchList)
 	if tgtLineId
@@ -125,25 +130,6 @@ function! s:MoveToFirstFoundLine(ifFwd, reqID, searchList)
 		call setpos('.', curpos)
 	endif
 endfunction
-
-
-" function! s:FindFirst(ifFwd, searchList)
-" 	" Returns the id of the first string matching specified criteria.
-" 	" F.e. finds closing line of depth 5 or opening line of depth 6.
-" 	" Arguments:
-" 	"  ifFwd    - if serach forward
-" 	"  searchList - list of possible criteria sets. Each item of the list
-" 	"             is also a list: [reqID, ifStart, depth].
-" 	let retval = 0
-" 	for [reqID, depth, ifStart] in a:searchList
-" 		if depth >= 0
-" 			let lineid = bmlog_lib#SearchPairMtdLine(reqID, depth, a:ifFwd, ifStart, 1)
-" 			let retval = a:ifFwd ?
-" 						\ bmlog_lib#GetMinLine(retval, lineid) : bmlog_lib#GetMaxLine(retval, lineid)
-" 		endif
-" 	endfor
-" 	return retval
-" endfunction
 
 
 function! s:FindFirst(ifFwd, reqID, searchList)
